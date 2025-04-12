@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.etf.pc</groupId>
-	<artifactId>pc</artifactId>
+	<artifactId>product-catalogue</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>pc</name>
 	<description>Project Catalogue</description>

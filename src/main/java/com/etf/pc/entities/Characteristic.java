@@ -5,7 +5,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
 import java.util.UUID;
 
 @Entity
@@ -20,12 +23,25 @@ public class Characteristic {
     @GeneratedValue
     private UUID id;
 
-    private String name;
+    @Column(nullable = false, length = 30, unique = true)
+    private String identifier;
 
-    @Enumerated(EnumType.STRING)
-    private CharacteristicType type;
+    private String description;
 
-    public enum CharacteristicType {
-        STRING, NUMBER, BOOLEAN
-    }
+    @Column(nullable = false)
+    private String value;
+
+    @Column(nullable = false, length = 20)
+    private String createdByUser;
+
+    @Column(length = 20)
+    private String modifiedByUser;
+
+    @CreationTimestamp
+    @Column(name = "date_created")
+    private Instant dateCreated;
+
+    @UpdateTimestamp
+    @Column(name = "date_modified")
+    private Instant dateModified;
 }

@@ -5,7 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
+import java.time.Instant;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Entity
@@ -27,4 +31,24 @@ public class TariffPlanAddon {
     @ManyToOne
     @JoinColumn(name = "addon_id")
     private Addon addon;
+
+    @Column(name = "valid_from", nullable = false)
+    private LocalDate validFrom;
+
+    @Column(name = "valid_to")
+    private LocalDate validTo;
+
+    @Column(nullable = false, length = 20)
+    private String createdByUser;
+
+    @Column(length = 20)
+    private String modifiedByUser;
+
+    @CreationTimestamp
+    @Column(name = "date_created")
+    private Instant dateCreated;
+
+    @UpdateTimestamp
+    @Column(name = "date_modified")
+    private Instant dateModified;
 }

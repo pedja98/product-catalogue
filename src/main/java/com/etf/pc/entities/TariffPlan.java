@@ -5,8 +5,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -23,12 +26,13 @@ public class TariffPlan {
     @GeneratedValue
     private UUID id;
 
-    private String name;
+    @Column(nullable = false, length = 30, unique = true)
+    private String identifier;
 
     private String description;
 
-    @Column(name = "base_price", nullable = false)
-    private BigDecimal basePrice;
+    @Column(nullable = false)
+    private BigDecimal price;
 
     @Column(name = "base_discount_percent")
     private BigDecimal baseDiscountPercent;
@@ -39,6 +43,17 @@ public class TariffPlan {
     @OneToMany(mappedBy = "tariffPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TariffPlanAddon> addons = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tariffPlan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TariffPlanPrice> pricingHistory = new ArrayList<>();
+    @Column(nullable = false, length = 20)
+    private String createdByUser;
+
+    @Column(length = 20)
+    private String modifiedByUser;
+
+    @CreationTimestamp
+    @Column(name = "date_created")
+    private Instant dateCreated;
+
+    @UpdateTimestamp
+    @Column(name = "date_modified")
+    private Instant dateModified;
 }
