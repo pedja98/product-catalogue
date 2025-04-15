@@ -33,10 +33,10 @@ public class TariffPlanCharacteristic {
 
     private String value;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;
 
-    @Column(length = 20)
+    @Column(length = 20, name = "modified_by_user")
     private String modifiedByUser;
 
     @CreationTimestamp

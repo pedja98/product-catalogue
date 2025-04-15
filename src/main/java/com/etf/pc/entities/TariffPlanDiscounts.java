@@ -26,18 +26,20 @@ public class TariffPlanDiscounts {
     @Column(nullable = false)
     private BigDecimal discount;
 
+    @Column(nullable = false, name="min_amount_of_tariff_plans")
     private Integer minAmountOfTariffPlans;
 
+    @Column(nullable = false, name="max_amount_of_tariff_plans")
     private Integer maxAmountOfTariffPlans;
 
     @ManyToOne
     @JoinColumn(name = "tariff_plan_id", updatable = false)
     private TariffPlan tariffPlan;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;
 
-    @Column(length = 20)
+    @Column(length = 20, name = "modified_by_user")
     private String modifiedByUser;
 
     @CreationTimestamp
