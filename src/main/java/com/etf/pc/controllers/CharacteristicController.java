@@ -1,5 +1,6 @@
 package com.etf.pc.controllers;
 
+import com.etf.pc.dtos.MessageResponse;
 import com.etf.pc.entities.Characteristic;
 import com.etf.pc.services.CharacteristicService;
 import lombok.RequiredArgsConstructor;
@@ -13,22 +14,22 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CharacteristicController {
 
-    private final CharacteristicService service;
+    private final CharacteristicService characteristicService;
 
     @GetMapping
     public ResponseEntity<List<Characteristic>> getAll() {
-        return ResponseEntity.ok(service.getAll());
+        return ResponseEntity.ok(characteristicService.getAll());
     }
 
     @GetMapping("/{identifier}")
     public ResponseEntity<Characteristic> getByIdentifier(@PathVariable String identifier) {
-        return service.getByIdentifier(identifier)
+        return characteristicService.getByIdentifier(identifier)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<Characteristic> create(@RequestBody Characteristic characteristic) {
-        return ResponseEntity.ok(service.create(characteristic));
+    public ResponseEntity<MessageResponse> create(@RequestBody Characteristic characteristic) {
+        return ResponseEntity.ok(new MessageResponse(characteristicService.create(characteristic)));
     }
 }

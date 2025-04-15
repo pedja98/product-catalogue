@@ -12,5 +12,6 @@ public class PcConstants {
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
     public static final class SuccessCodes {
+        public static final String CHAR_CREATED = "charCreated";
     }
 }

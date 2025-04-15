@@ -8,23 +8,25 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import static com.etf.pc.common.PcConstants.SuccessCodes.CHAR_CREATED;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class CharacteristicService {
 
-    private final CharacteristicRepository repository;
+    private final CharacteristicRepository characteristicRepository;
 
     public List<Characteristic> getAll() {
-        return repository.findAll();
+        return characteristicRepository.findAll();
     }
 
     public Optional<Characteristic> getByIdentifier(String identifier) {
-        return repository.findByIdentifier(identifier);
+        return characteristicRepository.findByIdentifier(identifier);
     }
 
-    public Characteristic create(Characteristic characteristic) {
-        return repository.save(characteristic);
+    public String create(Characteristic characteristic) {
+        characteristicRepository.save(characteristic);
+        return CHAR_CREATED;
     }
 }
