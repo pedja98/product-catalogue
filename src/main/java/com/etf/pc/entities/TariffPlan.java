@@ -43,9 +43,6 @@ public class TariffPlan {
     @OneToMany(mappedBy = "tariffPlan", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TariffPlanCharacteristic> characteristics = new ArrayList<>();
 
-    @OneToMany(mappedBy = "tariffPlan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TariffPlanAddon> addons = new ArrayList<>();
-
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;
 
