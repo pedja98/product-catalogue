@@ -34,6 +34,9 @@ public class Addon {
     @Column(nullable = false, length = 30, unique = true)
     private String identifier;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(nullable = false)
     private BigDecimal price;
 

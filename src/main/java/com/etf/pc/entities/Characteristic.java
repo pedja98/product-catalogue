@@ -32,10 +32,11 @@ public class Characteristic {
     @Column(nullable = false, length = 30, unique = true)
     private String identifier;
 
-    private String description;
-
     @Column(nullable = false)
     private String value;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
 
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;
