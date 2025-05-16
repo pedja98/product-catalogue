@@ -40,7 +40,6 @@ public class TariffPlanService {
                     existing.setIdentifier(updatedPlan.getIdentifier());
                     existing.setDescription(updatedPlan.getDescription());
                     existing.setPrice(updatedPlan.getPrice());
-                    existing.setCharacteristics(updatedPlan.getCharacteristics());
                     existing.setModifiedByUser(updatedPlan.getModifiedByUser());
                     tariffPlanRepository.save(existing);
                     return TARIFF_PLAN_UPDATED;

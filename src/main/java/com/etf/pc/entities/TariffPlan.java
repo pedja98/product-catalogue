@@ -41,9 +41,6 @@ public class TariffPlan {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @OneToMany(mappedBy = "tariffPlan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TariffPlanCharacteristic> characteristics = new ArrayList<>();
-
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;
 

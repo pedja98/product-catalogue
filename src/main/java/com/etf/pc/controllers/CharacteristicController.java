@@ -1,6 +1,7 @@
 package com.etf.pc.controllers;
 
 import com.etf.pc.dtos.MessageResponse;
+import com.etf.pc.dtos.SaveCharacteristicDto;
 import com.etf.pc.entities.Characteristic;
 import com.etf.pc.services.CharacteristicService;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +30,7 @@ public class CharacteristicController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponse> create(@RequestBody Characteristic characteristic) {
+    public ResponseEntity<MessageResponse> create(@RequestBody SaveCharacteristicDto characteristic) {
         return ResponseEntity.ok(new MessageResponse(characteristicService.create(characteristic)));
     }
 }
