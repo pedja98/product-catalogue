@@ -1,14 +1,14 @@
 package com.etf.pc.services;
 
+import com.etf.pc.dtos.SaveAddonDto;
 import com.etf.pc.entities.Addon;
+import com.etf.pc.filters.SetCurrentUserFilter;
 import com.etf.pc.repositories.AddonRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 import static com.etf.pc.common.PcConstants.SuccessCodes.ADDON_CREATED;
 import static com.etf.pc.common.PcConstants.SuccessCodes.ADDON_UPDATED;
@@ -28,8 +28,19 @@ public class AddonService {
         return addonRepository.findById(id);
     }
 
-    public String create(Addon addon) {
-        addonRepository.save(addon);
+    public String create(SaveAddonDto addonDetails) {
+        Map<String, String> nameMap = new HashMap<>();
+        nameMap.put("sr", addonDetails.getName().getSr());
+        nameMap.put("en", addonDetails.getName().getEn());
+        Addon addon = Addon.builder()
+                .name(nameMap)
+                .description(addonDetails.getDescription())
+                .price(addonDetails.getPrice())
+                .identifier(addonDetails.getIdentifier())
+                .validTo(addonDetails.getValidTo())
+                .validFrom(addonDetails.getValidFrom())
+                .createdByUser(SetCurrentUserFilter.getCurrentUsername())
+                .build();
         return ADDON_CREATED;
     }
 

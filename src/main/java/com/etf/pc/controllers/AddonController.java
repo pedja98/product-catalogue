@@ -1,6 +1,7 @@
 package com.etf.pc.controllers;
 
 import com.etf.pc.dtos.MessageResponse;
+import com.etf.pc.dtos.SaveAddonDto;
 import com.etf.pc.entities.Addon;
 import com.etf.pc.services.AddonService;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +31,7 @@ public class AddonController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponse> create(@RequestBody Addon addon) {
+    public ResponseEntity<MessageResponse> create(@RequestBody SaveAddonDto addon) {
         return ResponseEntity.ok(new MessageResponse(addonService.create(addon)));
     }
 
