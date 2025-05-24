@@ -22,11 +22,9 @@ public class TariffPlanController {
         return ResponseEntity.ok(tariffPlanService.getAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<TariffPlan> getById(@PathVariable UUID id) {
-        return tariffPlanService.getById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{identifier}")
+    public ResponseEntity<TariffPlan> getByIdentifier(@PathVariable String identifier) {
+        return ResponseEntity.ok(tariffPlanService.getByIdentifier(identifier));
     }
 
     @PostMapping

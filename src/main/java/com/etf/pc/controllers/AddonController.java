@@ -23,11 +23,9 @@ public class AddonController {
         return ResponseEntity.ok(addonService.getAll());
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<Addon> getById(@PathVariable UUID id) {
-        return addonService.getById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    @GetMapping("/{identifier}")
+    public ResponseEntity<Addon> getByIdentifier(@PathVariable String identifier) {
+        return ResponseEntity.ok(addonService.getByIdentifier(identifier));
     }
 
     @PostMapping

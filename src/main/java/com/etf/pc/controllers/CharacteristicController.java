@@ -24,9 +24,7 @@ public class CharacteristicController {
 
     @GetMapping("/{identifier}")
     public ResponseEntity<Characteristic> getByIdentifier(@PathVariable String identifier) {
-        return characteristicService.getByIdentifier(identifier)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return  ResponseEntity.ok(characteristicService.getByIdentifier(identifier));
     }
 
     @PostMapping

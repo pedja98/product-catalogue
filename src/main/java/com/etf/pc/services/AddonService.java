@@ -2,6 +2,8 @@ package com.etf.pc.services;
 
 import com.etf.pc.dtos.SaveAddonDto;
 import com.etf.pc.entities.Addon;
+import com.etf.pc.exceptions.DuplicateItemException;
+import com.etf.pc.exceptions.ItemNotFoundException;
 import com.etf.pc.filters.SetCurrentUserFilter;
 import com.etf.pc.repositories.AddonRepository;
 import jakarta.transaction.Transactional;
@@ -10,8 +12,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+import static com.etf.pc.common.PcConstants.ErrorCodes.CHAR_NOT_FOUND;
 import static com.etf.pc.common.PcConstants.SuccessCodes.ADDON_CREATED;
 import static com.etf.pc.common.PcConstants.SuccessCodes.ADDON_UPDATED;
+import static com.etf.pc.common.PcConstants.ErrorCodes.DUPLICATE_IDENTIFIER;
 
 @Service
 @RequiredArgsConstructor
@@ -24,11 +28,14 @@ public class AddonService {
         return addonRepository.findAll();
     }
 
-    public Optional<Addon> getById(UUID id) {
-        return addonRepository.findById(id);
+    public Addon getByIdentifier(String identifier) {
+        return addonRepository.findByIdentifier(identifier).orElseThrow(() -> new ItemNotFoundException(CHAR_NOT_FOUND));
     }
 
     public String create(SaveAddonDto addonDetails) {
+        if (addonRepository.findByIdentifier(addonDetails.getIdentifier()).isPresent()) {
+            throw new DuplicateItemException(DUPLICATE_IDENTIFIER);
+        }
         Map<String, String> nameMap = new HashMap<>();
         nameMap.put("sr", addonDetails.getName().getSr());
         nameMap.put("en", addonDetails.getName().getEn());
@@ -41,6 +48,7 @@ public class AddonService {
                 .validFrom(addonDetails.getValidFrom())
                 .createdByUser(SetCurrentUserFilter.getCurrentUsername())
                 .build();
+        this.addonRepository.save(addon);
         return ADDON_CREATED;
     }
 

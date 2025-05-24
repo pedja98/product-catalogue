@@ -10,7 +10,9 @@ public class PcConstants {
     public static final class ErrorCodes {
         public static final String CHAR_NOT_FOUND = "charNotFound";
         public static final String TARIFF_PLAN_NOT_FOUND = "tariffPlanNotFound";
+        public static final String ADDON_NOT_FOUND = "addonNotFound";
         public static final String DISCOUNT_NOT_FOUND = "discountNotFound";
+        public static final String DUPLICATE_IDENTIFIER = "duplicateIdentifier";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

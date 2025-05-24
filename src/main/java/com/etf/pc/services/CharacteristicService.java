@@ -2,6 +2,8 @@ package com.etf.pc.services;
 
 import com.etf.pc.dtos.SaveCharacteristicDto;
 import com.etf.pc.entities.Characteristic;
+import com.etf.pc.exceptions.DuplicateItemException;
+import com.etf.pc.exceptions.ItemNotFoundException;
 import com.etf.pc.filters.SetCurrentUserFilter;
 import com.etf.pc.repositories.CharacteristicRepository;
 import jakarta.transaction.Transactional;
@@ -11,7 +13,9 @@ import org.springframework.stereotype.Service;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+
+import static com.etf.pc.common.PcConstants.ErrorCodes.DUPLICATE_IDENTIFIER;
+import static com.etf.pc.common.PcConstants.ErrorCodes.CHAR_NOT_FOUND;
 import static com.etf.pc.common.PcConstants.SuccessCodes.CHAR_CREATED;
 
 @Service
@@ -25,11 +29,15 @@ public class CharacteristicService {
         return characteristicRepository.findAll();
     }
 
-    public Optional<Characteristic> getByIdentifier(String identifier) {
-        return characteristicRepository.findByIdentifier(identifier);
+    public Characteristic getByIdentifier(String identifier) {
+        return characteristicRepository.findByIdentifier(identifier).orElseThrow(() -> new ItemNotFoundException(CHAR_NOT_FOUND));
     }
 
     public String create(SaveCharacteristicDto characteristicDetails) {
+        if (characteristicRepository.findByIdentifier(characteristicDetails.getIdentifier()).isPresent()) {
+            throw new DuplicateItemException(DUPLICATE_IDENTIFIER);
+        }
+
         Map<String, String> nameMap = new HashMap<>();
         nameMap.put("sr", characteristicDetails.getName().getSr());
         nameMap.put("en", characteristicDetails.getName().getEn());
