@@ -33,9 +33,9 @@ public class AddonController {
         return ResponseEntity.ok(new MessageResponse(addonService.create(addon)));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MessageResponse> update(@PathVariable UUID id, @RequestBody Addon addon) {
-        return ResponseEntity.ok(new MessageResponse(addonService.update(id, addon)));
+    @PutMapping("/{identifier}")
+    public ResponseEntity<MessageResponse> update(@PathVariable String identifier, @RequestBody SaveAddonDto addon) {
+        return ResponseEntity.ok(new MessageResponse(addonService.update(identifier, addon)));
     }
 }
 

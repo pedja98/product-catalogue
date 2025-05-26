@@ -31,4 +31,12 @@ public class CharacteristicController {
     public ResponseEntity<MessageResponse> create(@RequestBody SaveCharacteristicDto characteristic) {
         return ResponseEntity.ok(new MessageResponse(characteristicService.create(characteristic)));
     }
+
+    @PutMapping("/{identifier}")
+    public ResponseEntity<MessageResponse> update(
+            @PathVariable String identifier,
+            @RequestBody SaveCharacteristicDto updatedDto
+    ) {
+        return ResponseEntity.ok(new MessageResponse(characteristicService.update(identifier, updatedDto)));
+    }
 }

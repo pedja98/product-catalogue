@@ -12,10 +12,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.*;
 
-import static com.etf.pc.common.PcConstants.ErrorCodes.CHAR_NOT_FOUND;
-import static com.etf.pc.common.PcConstants.SuccessCodes.ADDON_CREATED;
-import static com.etf.pc.common.PcConstants.SuccessCodes.ADDON_UPDATED;
-import static com.etf.pc.common.PcConstants.ErrorCodes.DUPLICATE_IDENTIFIER;
+import static com.etf.pc.common.PcConstants.ErrorCodes.*;
+import static com.etf.pc.common.PcConstants.SuccessCodes.*;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class AddonService {
     }
 
     public Addon getByIdentifier(String identifier) {
-        return addonRepository.findByIdentifier(identifier).orElseThrow(() -> new ItemNotFoundException(CHAR_NOT_FOUND));
+        return addonRepository.findByIdentifier(identifier).orElseThrow(() -> new ItemNotFoundException(ADDON_NOT_FOUND));
     }
 
     public String create(SaveAddonDto addonDetails) {
@@ -52,18 +50,22 @@ public class AddonService {
         return ADDON_CREATED;
     }
 
-    public String update(UUID id, Addon updatedAddon) {
-        return addonRepository.findById(id)
-                .map(existing -> {
-                    existing.setName(updatedAddon.getName());
-                    existing.setIdentifier(updatedAddon.getIdentifier());
-                    existing.setPrice(updatedAddon.getPrice());
-                    existing.setValidFrom(updatedAddon.getValidFrom());
-                    existing.setValidTo(updatedAddon.getValidTo());
-                    existing.setModifiedByUser(updatedAddon.getModifiedByUser());
-                    addonRepository.save(existing);
-                    return ADDON_UPDATED;
-                })
-                .orElseThrow(() -> new IllegalArgumentException("Addon not found"));
+    public String update(String identifier, SaveAddonDto addonDetails) {
+        Addon addon = this.addonRepository.findByIdentifier(identifier)
+                .orElseThrow(() -> new ItemNotFoundException(ADDON_NOT_FOUND));
+
+        Map<String, String> nameMap = new HashMap<>();
+        nameMap.put("sr", addonDetails.getName().getSr());
+        nameMap.put("en", addonDetails.getName().getEn());
+
+        addon.setName(nameMap);
+        addon.setPrice(addonDetails.getPrice());
+        addon.setDescription(addonDetails.getDescription());
+        addon.setModifiedByUser(SetCurrentUserFilter.getCurrentUsername());
+        addon.setValidFrom(addonDetails.getValidFrom());
+        addon.setValidTo(addonDetails.getValidTo());
+
+        this.addonRepository.save(addon);
+        return ADDON_UPDATED;
     }
 }

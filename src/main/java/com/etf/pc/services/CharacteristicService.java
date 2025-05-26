@@ -17,6 +17,7 @@ import java.util.Map;
 import static com.etf.pc.common.PcConstants.ErrorCodes.DUPLICATE_IDENTIFIER;
 import static com.etf.pc.common.PcConstants.ErrorCodes.CHAR_NOT_FOUND;
 import static com.etf.pc.common.PcConstants.SuccessCodes.CHAR_CREATED;
+import static com.etf.pc.common.PcConstants.SuccessCodes.CHAR_UPDATED;
 
 @Service
 @RequiredArgsConstructor
@@ -52,5 +53,22 @@ public class CharacteristicService {
 
         characteristicRepository.save(characteristic);
         return CHAR_CREATED;
+    }
+
+    public String update(String identifier, SaveCharacteristicDto characteristicDto) {
+        Characteristic characteristic = characteristicRepository.findByIdentifier(identifier)
+                .orElseThrow(() -> new ItemNotFoundException(CHAR_NOT_FOUND));
+
+        Map<String, String> nameMap = new HashMap<>();
+        nameMap.put("sr", characteristicDto.getName().getSr());
+        nameMap.put("en", characteristicDto.getName().getEn());
+
+        characteristic.setName(nameMap);
+        characteristic.setValue(characteristicDto.getValue());
+        characteristic.setDescription(characteristicDto.getDescription());
+        characteristic.setModifiedByUser(SetCurrentUserFilter.getCurrentUsername());
+
+        characteristicRepository.save(characteristic);
+        return CHAR_UPDATED;
     }
 }

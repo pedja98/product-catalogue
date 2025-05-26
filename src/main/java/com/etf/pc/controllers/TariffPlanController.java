@@ -1,6 +1,7 @@
 package com.etf.pc.controllers;
 
 import com.etf.pc.dtos.MessageResponse;
+import com.etf.pc.dtos.SaveTariffPlanDto;
 import com.etf.pc.entities.TariffPlan;
 import com.etf.pc.services.TariffPlanService;
 import lombok.RequiredArgsConstructor;
@@ -28,12 +29,12 @@ public class TariffPlanController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageResponse> create(@RequestBody TariffPlan tariffPlan) {
+    public ResponseEntity<MessageResponse> create(@RequestBody SaveTariffPlanDto tariffPlan) {
         return ResponseEntity.ok(new MessageResponse(tariffPlanService.create(tariffPlan)));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<MessageResponse> update(@PathVariable UUID id, @RequestBody TariffPlan tariffPlan) {
-        return ResponseEntity.ok(new MessageResponse(tariffPlanService.update(id, tariffPlan)));
+    @PutMapping("/{identifier}")
+    public ResponseEntity<MessageResponse> update(@PathVariable String identifier, @RequestBody SaveTariffPlanDto tariffPlan) {
+        return ResponseEntity.ok(new MessageResponse(tariffPlanService.update(identifier, tariffPlan)));
     }
 }
