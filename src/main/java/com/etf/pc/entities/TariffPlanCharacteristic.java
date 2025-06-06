@@ -31,8 +31,6 @@ public class TariffPlanCharacteristic {
     @JoinColumn(name = "characteristic_id")
     private Characteristic characteristic;
 
-    private String value;
-
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;
 
