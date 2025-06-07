@@ -34,14 +34,7 @@ public class TariffPlanCharacteristic {
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;
 
-    @Column(length = 20, name = "modified_by_user")
-    private String modifiedByUser;
-
     @CreationTimestamp
     @Column(name = "date_created")
     private Instant dateCreated;
-
-    @UpdateTimestamp
-    @Column(name = "date_modified")
-    private Instant dateModified;
 }

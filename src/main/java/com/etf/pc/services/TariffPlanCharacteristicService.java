@@ -7,6 +7,7 @@ import com.etf.pc.dtos.TariffPlanCharacteristicTariffPlanDto;
 import com.etf.pc.entities.Characteristic;
 import com.etf.pc.entities.TariffPlan;
 import com.etf.pc.entities.TariffPlanCharacteristic;
+import com.etf.pc.exceptions.ItemNotFoundException;
 import com.etf.pc.filters.SetCurrentUserFilter;
 import com.etf.pc.repositories.CharacteristicRepository;
 import com.etf.pc.repositories.TariffPlanCharacteristicRepository;
@@ -18,10 +19,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+import static com.etf.pc.common.PcConstants.ErrorCodes.*;
 import static com.etf.pc.common.PcConstants.SuccessCodes.TARIFF_PLAN_CHARACTERISTIC_DELETED;
 import static com.etf.pc.common.PcConstants.SuccessCodes.TARIFF_PLAN_CHARACTERISTIC_ADDED;
-import static com.etf.pc.common.PcConstants.ErrorCodes.CHAR_NOT_FOUND;
-import static com.etf.pc.common.PcConstants.ErrorCodes.TARIFF_PLAN_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor
@@ -32,43 +32,38 @@ public class TariffPlanCharacteristicService {
     private final TariffPlanRepository tariffPlanRepository;
     private final CharacteristicRepository characteristicRepository;
 
-    public List<TariffPlanCharacteristicResponseDto> getByTariffPlan(UUID tariffPlanId) {
-        List<TariffPlanCharacteristic> list = tariffPlanCharacteristicRepository.findByTariffPlanId(tariffPlanId);
+    public TariffPlanCharacteristicResponseDto getByTariffPlan(String tariffPlanIdentifier) {
+        TariffPlan tariffPlan = this.tariffPlanRepository
+                .findByIdentifier(tariffPlanIdentifier)
+                .orElseThrow(() -> new ItemNotFoundException(TARIFF_PLAN_NOT_FOUND));
 
-        return list.stream()
-                .map(tpc -> TariffPlanCharacteristicResponseDto.builder()
-                        .id(tpc.getId())
-                        .tariffPlan(TariffPlanCharacteristicTariffPlanDto.builder()
-                                .id(tpc.getTariffPlan().getId())
-                                .name(tpc.getTariffPlan().getName())
-                                .identifier(tpc.getTariffPlan().getIdentifier())
-                                .description(tpc.getTariffPlan().getDescription())
-                                .price(tpc.getTariffPlan().getPrice())
-                                .createdByUser(tpc.getTariffPlan().getCreatedByUser())
-                                .modifiedByUser(tpc.getTariffPlan().getModifiedByUser())
-                                .dateCreated(tpc.getTariffPlan().getDateCreated())
-                                .dateModified(tpc.getTariffPlan().getDateModified())
-                                .build())
-                        .characteristics(
-                                list.stream()
-                                        .map(inner -> {
-                                            var c = inner.getCharacteristic();
-                                            return TariffPlanCharacteristicCharDto.builder()
-                                                    .id(c.getId())
-                                                    .name(c.getName())
-                                                    .identifier(c.getIdentifier())
-                                                    .createdByUser(c.getCreatedByUser())
-                                                    .modifiedByUser(c.getModifiedByUser())
-                                                    .dateCreated(c.getDateCreated())
-                                                    .dateModified(c.getDateModified())
-                                                    .build();
-                                        })
-                                        .toList()
-                        )
-                        .build())
+        List<TariffPlanCharacteristic> list = tariffPlanCharacteristicRepository.findByTariffPlanId(tariffPlan.getId());
+
+        TariffPlanCharacteristicTariffPlanDto tariffPlanDto = TariffPlanCharacteristicTariffPlanDto.builder()
+                .id(tariffPlan.getId())
+                .name(tariffPlan.getName())
+                .identifier(tariffPlan.getIdentifier())
+                .build();
+
+        List<TariffPlanCharacteristicCharDto> charDtos = list.stream()
+                .map(tpc -> {
+                    var c = tpc.getCharacteristic();
+                    return TariffPlanCharacteristicCharDto.builder()
+                            .charId(c.getId())
+                            .relationId(tpc.getId())
+                            .name(c.getName())
+                            .identifier(c.getIdentifier())
+                            .createdByUser(tpc.getCreatedByUser())
+                            .dateCreated(tpc.getDateCreated())
+                            .build();
+                })
                 .toList();
-    }
 
+        return TariffPlanCharacteristicResponseDto.builder()
+                .tariffPlan(tariffPlanDto)
+                .characteristics(charDtos)
+                .build();
+    }
 
     public String add(SaveTariffPlanCharacteristicDto tariffPlanCharacteristic) {
         TariffPlan tariffPlan = tariffPlanRepository.findById(tariffPlanCharacteristic.getTariffPlanId())

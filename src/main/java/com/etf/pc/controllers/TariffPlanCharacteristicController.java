@@ -19,9 +19,9 @@ public class TariffPlanCharacteristicController {
 
     private final TariffPlanCharacteristicService service;
 
-    @GetMapping("/tariff-plan/{tariffPlanId}/characteristics")
-    public ResponseEntity<List<TariffPlanCharacteristicResponseDto>> getByTariffPlan(@PathVariable UUID tariffPlanId) {
-        return ResponseEntity.ok(service.getByTariffPlan(tariffPlanId));
+    @GetMapping("/tariff-plan/{tariffPlanIdentifier}/characteristics")
+    public ResponseEntity<TariffPlanCharacteristicResponseDto> getByTariffPlan(@PathVariable String tariffPlanIdentifier) {
+        return ResponseEntity.ok(service.getByTariffPlan(tariffPlanIdentifier));
     }
 
     @PostMapping

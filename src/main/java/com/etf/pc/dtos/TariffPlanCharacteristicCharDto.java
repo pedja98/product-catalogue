@@ -10,11 +10,10 @@ import java.util.UUID;
 @Data
 @Builder
 public class TariffPlanCharacteristicCharDto {
-    private UUID id;
+    private UUID charId;
+    private UUID relationId;
     private Map<String, String> name;
     private String identifier;
     private String createdByUser;
-    private String modifiedByUser;
     private Instant dateCreated;
-    private Instant dateModified;
 }
