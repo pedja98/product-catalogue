@@ -1,7 +1,14 @@
 package com.etf.pc.services;
 
+import com.etf.pc.dtos.SaveTariffPlanDiscountDto;
+import com.etf.pc.dtos.TariffPlanDiscountDto;
+import com.etf.pc.dtos.TariffPlanDiscountResponseDto;
+import com.etf.pc.dtos.TariffPlanRelationshipDto;
 import com.etf.pc.entities.TariffPlan;
 import com.etf.pc.entities.TariffPlanDiscounts;
+import com.etf.pc.exceptions.BadRequestException;
+import com.etf.pc.exceptions.ItemNotFoundException;
+import com.etf.pc.filters.SetCurrentUserFilter;
 import com.etf.pc.repositories.TariffPlanDiscountsRepository;
 import com.etf.pc.repositories.TariffPlanRepository;
 import jakarta.transaction.Transactional;
@@ -11,10 +18,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
-import static com.etf.pc.common.PcConstants.SuccessCodes.TARIFF_PLAN_DISCOUNT_UPDATED;
-import static com.etf.pc.common.PcConstants.SuccessCodes.TARIFF_PLAN_DISCOUNT_CREATED;
-import static com.etf.pc.common.PcConstants.ErrorCodes.TARIFF_PLAN_NOT_FOUND;
-import static com.etf.pc.common.PcConstants.ErrorCodes.DISCOUNT_NOT_FOUND;
+import static com.etf.pc.common.PcConstants.ErrorCodes.*;
+import static com.etf.pc.common.PcConstants.SuccessCodes.*;
 
 @Service
 @RequiredArgsConstructor
@@ -23,36 +28,78 @@ public class TariffPlanDiscountsService {
 
     private final TariffPlanDiscountsRepository discountsRepository;
     private final TariffPlanRepository tariffPlanRepository;
+    private final TariffPlanDiscountsRepository tariffPlanDiscountsRepository;
 
-    public List<TariffPlanDiscounts> getAll() {
-        return discountsRepository.findAll();
+    public TariffPlanDiscountResponseDto getDiscountsByTariffPlan(String tariffPlanIdentifier) {
+        TariffPlan tariffPlan = this.tariffPlanRepository
+                .findByIdentifier(tariffPlanIdentifier)
+                .orElseThrow(() -> new ItemNotFoundException(TARIFF_PLAN_NOT_FOUND));
+
+        List<TariffPlanDiscounts> discountList = tariffPlanDiscountsRepository.findByTariffPlanId(tariffPlan.getId());
+
+        TariffPlanRelationshipDto tariffPlanDto = TariffPlanRelationshipDto.builder()
+                .id(tariffPlan.getId())
+                .name(tariffPlan.getName())
+                .identifier(tariffPlan.getIdentifier())
+                .build();
+
+        List<TariffPlanDiscountDto> discountDtos = discountList.stream()
+                .map(d -> TariffPlanDiscountDto.builder()
+                        .id(d.getId())
+                        .discount(d.getDiscount())
+                        .minAmountOfTariffPlans(d.getMinAmountOfTariffPlans())
+                        .maxAmountOfTariffPlans(d.getMaxAmountOfTariffPlans())
+                        .createdByUser(d.getCreatedByUser())
+                        .modifiedByUser(d.getModifiedByUser())
+                        .dateCreated(d.getDateCreated())
+                        .dateModified(d.getDateModified())
+                        .build())
+                .toList();
+
+        return TariffPlanDiscountResponseDto.builder()
+                .tariffPlan(tariffPlanDto)
+                .discount(discountDtos)
+                .build();
     }
 
-    public TariffPlanDiscounts getById(UUID id) {
-        return discountsRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Discount not found"));
-    }
+    public String create(SaveTariffPlanDiscountDto tariffPlanDiscountDetails) {
+        TariffPlan tariffPlan = this.tariffPlanRepository
+                .findByIdentifier(tariffPlanDiscountDetails.getTariffPlanIdentifier())
+                .orElseThrow(() -> new ItemNotFoundException(TARIFF_PLAN_NOT_FOUND));
 
-    public String create(TariffPlanDiscounts entity) {
-        if (entity.getTariffPlan() != null && entity.getTariffPlan().getId() != null) {
-            TariffPlan plan = tariffPlanRepository.findById(entity.getTariffPlan().getId())
-                    .orElseThrow(() -> new IllegalArgumentException(TARIFF_PLAN_NOT_FOUND));
-            entity.setTariffPlan(plan);
+        if (tariffPlanDiscountDetails.getMinAmountOfTariffPlans() >= tariffPlanDiscountDetails.getMaxAmountOfTariffPlans()) {
+            throw new BadRequestException(MAX_TP_LOWER_THEN_MIN);
         }
-        discountsRepository.save(entity);
+
+        TariffPlanDiscounts tariffPlanDiscounts = TariffPlanDiscounts.builder()
+                .tariffPlan(tariffPlan)
+                .discount(tariffPlanDiscountDetails.getDiscount())
+                .minAmountOfTariffPlans(tariffPlanDiscountDetails.getMinAmountOfTariffPlans())
+                .maxAmountOfTariffPlans(tariffPlanDiscountDetails.getMaxAmountOfTariffPlans())
+                .createdByUser(SetCurrentUserFilter.getCurrentUsername())
+                .build();
+        this.discountsRepository.save(tariffPlanDiscounts);
         return TARIFF_PLAN_DISCOUNT_CREATED;
     }
 
-    public String update(UUID id, TariffPlanDiscounts updated) {
+    public String update(UUID id, SaveTariffPlanDiscountDto updated) {
         TariffPlanDiscounts existing = discountsRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(DISCOUNT_NOT_FOUND));
 
         existing.setDiscount(updated.getDiscount());
         existing.setMinAmountOfTariffPlans(updated.getMinAmountOfTariffPlans());
         existing.setMaxAmountOfTariffPlans(updated.getMaxAmountOfTariffPlans());
-        existing.setModifiedByUser(updated.getModifiedByUser());
+        existing.setModifiedByUser(SetCurrentUserFilter.getCurrentUsername());
 
         discountsRepository.save(existing);
         return TARIFF_PLAN_DISCOUNT_UPDATED;
+    }
+
+    public String delete(UUID id) {
+        if (!this.discountsRepository.existsById(id)) {
+            throw new IllegalArgumentException(DISCOUNT_NOT_FOUND);
+        }
+        this.discountsRepository.deleteById(id);
+        return DISCOUNT_DELETED;
     }
 }

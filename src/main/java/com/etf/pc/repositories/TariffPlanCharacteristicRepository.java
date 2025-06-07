@@ -1,5 +1,7 @@
 package com.etf.pc.repositories;
 
+import com.etf.pc.entities.Characteristic;
+import com.etf.pc.entities.TariffPlan;
 import com.etf.pc.entities.TariffPlanCharacteristic;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -8,4 +10,5 @@ import java.util.UUID;
 
 public interface TariffPlanCharacteristicRepository extends JpaRepository<TariffPlanCharacteristic, UUID> {
     List<TariffPlanCharacteristic> findByTariffPlanId(UUID tariffPlanId);
+    boolean existsByTariffPlanAndCharacteristic(TariffPlan tariffPlan, Characteristic characteristic);
 }

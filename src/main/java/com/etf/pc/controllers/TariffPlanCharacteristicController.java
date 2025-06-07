@@ -3,13 +3,11 @@ package com.etf.pc.controllers;
 import com.etf.pc.dtos.MessageResponse;
 import com.etf.pc.dtos.SaveTariffPlanCharacteristicDto;
 import com.etf.pc.dtos.TariffPlanCharacteristicResponseDto;
-import com.etf.pc.entities.TariffPlanCharacteristic;
 import com.etf.pc.services.TariffPlanCharacteristicService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 import java.util.UUID;
 
 @RestController

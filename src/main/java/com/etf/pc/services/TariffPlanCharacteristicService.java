@@ -3,10 +3,11 @@ package com.etf.pc.services;
 import com.etf.pc.dtos.SaveTariffPlanCharacteristicDto;
 import com.etf.pc.dtos.TariffPlanCharacteristicCharDto;
 import com.etf.pc.dtos.TariffPlanCharacteristicResponseDto;
-import com.etf.pc.dtos.TariffPlanCharacteristicTariffPlanDto;
+import com.etf.pc.dtos.TariffPlanRelationshipDto;
 import com.etf.pc.entities.Characteristic;
 import com.etf.pc.entities.TariffPlan;
 import com.etf.pc.entities.TariffPlanCharacteristic;
+import com.etf.pc.exceptions.DuplicateItemException;
 import com.etf.pc.exceptions.ItemNotFoundException;
 import com.etf.pc.filters.SetCurrentUserFilter;
 import com.etf.pc.repositories.CharacteristicRepository;
@@ -39,7 +40,7 @@ public class TariffPlanCharacteristicService {
 
         List<TariffPlanCharacteristic> list = tariffPlanCharacteristicRepository.findByTariffPlanId(tariffPlan.getId());
 
-        TariffPlanCharacteristicTariffPlanDto tariffPlanDto = TariffPlanCharacteristicTariffPlanDto.builder()
+        TariffPlanRelationshipDto tariffPlanDto = TariffPlanRelationshipDto.builder()
                 .id(tariffPlan.getId())
                 .name(tariffPlan.getName())
                 .identifier(tariffPlan.getIdentifier())
@@ -71,6 +72,13 @@ public class TariffPlanCharacteristicService {
 
         Characteristic characteristic = characteristicRepository.findById(tariffPlanCharacteristic.getCharId())
                 .orElseThrow(() -> new IllegalArgumentException(CHAR_NOT_FOUND));
+
+        boolean alreadyExists = tariffPlanCharacteristicRepository
+                .existsByTariffPlanAndCharacteristic(tariffPlan, characteristic);
+
+        if (alreadyExists) {
+            throw new DuplicateItemException(CHAR_ALREADY_ADDED);
+        }
 
         TariffPlanCharacteristic entity = new TariffPlanCharacteristic();
         entity.setTariffPlan(tariffPlan);

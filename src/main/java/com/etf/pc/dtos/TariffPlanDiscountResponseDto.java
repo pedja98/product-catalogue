@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder
-public class TariffPlanCharacteristicResponseDto {
+public class TariffPlanDiscountResponseDto {
     private TariffPlanRelationshipDto tariffPlan;
-    private List<TariffPlanCharacteristicCharDto> characteristics;
+    private List<TariffPlanDiscountDto> discount;
 }
