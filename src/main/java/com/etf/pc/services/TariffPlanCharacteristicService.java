@@ -69,7 +69,7 @@ public class TariffPlanCharacteristicService {
     public String add(SaveTariffPlanCharacteristicDto tariffPlanCharacteristic) {
         TariffPlan tariffPlan = tariffPlanRepository.findById(tariffPlanCharacteristic.getTariffPlanId())
                 .orElseThrow(() -> new IllegalArgumentException(TARIFF_PLAN_NOT_FOUND));
-
+        System.out.println(tariffPlan.getId());
         Characteristic characteristic = characteristicRepository.findById(tariffPlanCharacteristic.getCharId())
                 .orElseThrow(() -> new IllegalArgumentException(CHAR_NOT_FOUND));
 

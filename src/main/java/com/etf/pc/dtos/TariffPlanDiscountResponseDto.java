@@ -9,5 +9,5 @@ import java.util.List;
 @Builder
 public class TariffPlanDiscountResponseDto {
     private TariffPlanRelationshipDto tariffPlan;
-    private List<TariffPlanDiscountDto> discount;
+    private List<TariffPlanDiscountDto> discounts;
 }

@@ -58,7 +58,7 @@ public class TariffPlanDiscountsService {
 
         return TariffPlanDiscountResponseDto.builder()
                 .tariffPlan(tariffPlanDto)
-                .discount(discountDtos)
+                .discounts(discountDtos)
                 .build();
     }
 
