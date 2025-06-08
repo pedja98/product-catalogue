@@ -15,6 +15,7 @@ public class PcConstants {
         public static final String ADDON_NOT_FOUND = "addonNotFound";
         public static final String DISCOUNT_NOT_FOUND = "discountNotFound";
         public static final String DUPLICATE_IDENTIFIER = "duplicateIdentifier";
+        public static final String DISCOUNT_BAD_VALUE = "discountBadValue";
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)

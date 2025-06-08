@@ -15,6 +15,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -69,6 +70,10 @@ public class TariffPlanDiscountsService {
 
         if (tariffPlanDiscountDetails.getMinAmountOfTariffPlans() >= tariffPlanDiscountDetails.getMaxAmountOfTariffPlans()) {
             throw new BadRequestException(MAX_TP_LOWER_THEN_MIN);
+        }
+
+        if (tariffPlanDiscountDetails.getDiscount().compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new BadRequestException(DISCOUNT_BAD_VALUE);
         }
 
         TariffPlanDiscounts tariffPlanDiscounts = TariffPlanDiscounts.builder()
