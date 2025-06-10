@@ -52,17 +52,18 @@ public class TariffPlanService {
         return TARIFF_PLAN_CREATED;
     }
 
-    public String update(String identifier, SaveTariffPlanDto addonDetails) {
+    public String update(String identifier, SaveTariffPlanDto tariffPlanDetails) {
         TariffPlan tariffPlan = this.tariffPlanRepository.findByIdentifier(identifier)
                 .orElseThrow(() -> new ItemNotFoundException(ADDON_NOT_FOUND));
 
         Map<String, String> nameMap = new HashMap<>();
-        nameMap.put("sr", addonDetails.getName().getSr());
-        nameMap.put("en", addonDetails.getName().getEn());
+        nameMap.put("sr", tariffPlanDetails.getName().getSr());
+        nameMap.put("en", tariffPlanDetails.getName().getEn());
 
         tariffPlan.setName(nameMap);
-        tariffPlan.setPrice(addonDetails.getPrice());
-        tariffPlan.setDescription(addonDetails.getDescription());
+        tariffPlan.setStatus(tariffPlanDetails.getStatus());
+        tariffPlan.setPrice(tariffPlanDetails.getPrice());
+        tariffPlan.setDescription(tariffPlanDetails.getDescription());
         tariffPlan.setModifiedByUser(SetCurrentUserFilter.getCurrentUsername());
 
         this.tariffPlanRepository.save(tariffPlan);

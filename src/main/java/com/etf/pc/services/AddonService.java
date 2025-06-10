@@ -2,6 +2,7 @@ package com.etf.pc.services;
 
 import com.etf.pc.dtos.SaveAddonDto;
 import com.etf.pc.entities.Addon;
+import com.etf.pc.enums.ItemStatus;
 import com.etf.pc.exceptions.DuplicateItemException;
 import com.etf.pc.exceptions.ItemNotFoundException;
 import com.etf.pc.filters.SetCurrentUserFilter;
@@ -41,6 +42,7 @@ public class AddonService {
                 .name(nameMap)
                 .description(addonDetails.getDescription())
                 .price(addonDetails.getPrice())
+                .status(ItemStatus.ACTIVE)
                 .identifier(addonDetails.getIdentifier())
                 .validTo(addonDetails.getValidTo())
                 .validFrom(addonDetails.getValidFrom())
@@ -59,6 +61,7 @@ public class AddonService {
         nameMap.put("en", addonDetails.getName().getEn());
 
         addon.setName(nameMap);
+        addon.setStatus(addonDetails.getStatus());
         addon.setPrice(addonDetails.getPrice());
         addon.setDescription(addonDetails.getDescription());
         addon.setModifiedByUser(SetCurrentUserFilter.getCurrentUsername());

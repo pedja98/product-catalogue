@@ -1,6 +1,7 @@
 package com.etf.pc.entities;
 
 import com.etf.pc.converters.JsonToNameMapConvertor;
+import com.etf.pc.enums.ItemStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,6 +46,10 @@ public class Addon {
 
     @Column(name = "valid_to")
     private LocalDate validTo;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private ItemStatus status = ItemStatus.ACTIVE;
 
     @Column(nullable = false, length = 20, name = "created_by_user")
     private String createdByUser;
