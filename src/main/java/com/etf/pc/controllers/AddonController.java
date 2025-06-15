@@ -37,5 +37,11 @@ public class AddonController {
     public ResponseEntity<MessageResponse> update(@PathVariable String identifier, @RequestBody SaveAddonDto addon) {
         return ResponseEntity.ok(new MessageResponse(addonService.update(identifier, addon)));
     }
+
+    @PutMapping("/deactivate-expired")
+    public ResponseEntity<Void> deactivateExpiredAddons() {
+        addonService.deactivateExpiredAddons();
+        return ResponseEntity.ok().build();
+    }
 }
 

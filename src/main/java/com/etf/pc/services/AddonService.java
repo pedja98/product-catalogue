@@ -11,6 +11,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import static com.etf.pc.common.PcConstants.ErrorCodes.*;
@@ -70,5 +71,21 @@ public class AddonService {
 
         this.addonRepository.save(addon);
         return ADDON_UPDATED;
+    }
+
+    public void deactivateExpiredAddons() {
+        LocalDate today = LocalDate.now();
+        List<Addon> expiredAddons = addonRepository.findByStatusAndValidToLessThanEqual(ItemStatus.ACTIVE, today);
+
+        if (expiredAddons.isEmpty()) {
+            return;
+        }
+
+        expiredAddons.forEach(addon -> {
+            addon.setStatus(ItemStatus.INACTIVE);
+            addon.setModifiedByUser(SetCurrentUserFilter.getCurrentUsername());
+        });
+
+        addonRepository.saveAll(expiredAddons);
     }
 }
