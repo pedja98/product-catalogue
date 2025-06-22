@@ -12,4 +12,5 @@ import java.util.UUID;
 public interface AddonRepository extends JpaRepository<Addon, UUID> {
     Optional<Addon> findByIdentifier(String identifier);
     List<Addon> findByStatusAndValidToLessThanEqual(ItemStatus status, LocalDate date);
+    List<Addon> findAllByStatus(ItemStatus status);
 }

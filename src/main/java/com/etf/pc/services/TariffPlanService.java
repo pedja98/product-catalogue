@@ -2,6 +2,7 @@ package com.etf.pc.services;
 
 import com.etf.pc.dtos.SaveTariffPlanDto;
 import com.etf.pc.entities.TariffPlan;
+import com.etf.pc.enums.ItemStatus;
 import com.etf.pc.exceptions.DuplicateItemException;
 import com.etf.pc.exceptions.ItemNotFoundException;
 import com.etf.pc.filters.SetCurrentUserFilter;
@@ -24,7 +25,10 @@ public class TariffPlanService {
 
     private final TariffPlanRepository tariffPlanRepository;
 
-    public List<TariffPlan> getAll() {
+    public List<TariffPlan> getAll(ItemStatus status) {
+        if (status != null) {
+            return tariffPlanRepository.findAllByStatus(status);
+        }
         return tariffPlanRepository.findAll();
     }
 

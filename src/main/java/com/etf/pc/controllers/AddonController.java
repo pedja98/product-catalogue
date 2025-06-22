@@ -3,6 +3,7 @@ package com.etf.pc.controllers;
 import com.etf.pc.dtos.MessageResponse;
 import com.etf.pc.dtos.SaveAddonDto;
 import com.etf.pc.entities.Addon;
+import com.etf.pc.enums.ItemStatus;
 import com.etf.pc.services.AddonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -19,8 +20,8 @@ public class AddonController {
     private final AddonService addonService;
 
     @GetMapping
-    public ResponseEntity<List<Addon>> getAll() {
-        return ResponseEntity.ok(addonService.getAll());
+    public ResponseEntity<List<Addon>> getAll(@RequestParam(value = "status", required = false) ItemStatus status) {
+        return ResponseEntity.ok(addonService.getAll(status));
     }
 
     @GetMapping("/{identifier}")

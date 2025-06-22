@@ -32,6 +32,12 @@ public class HeaderValidationFilter extends OncePerRequestFilter {
             return;
         }
 
+        if (!userTypeHeader.equals(UserType.ADMIN.name()) && !request.getMethod().equals("GET")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.getWriter().write("User is not authorized");
+            return;
+        }
+
         filterChain.doFilter(request, response);
     }
 }

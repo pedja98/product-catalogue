@@ -1,9 +1,6 @@
 package com.etf.pc.services;
 
-import com.etf.pc.dtos.SaveTariffPlanDiscountDto;
-import com.etf.pc.dtos.TariffPlanDiscountDto;
-import com.etf.pc.dtos.TariffPlanDiscountResponseDto;
-import com.etf.pc.dtos.TariffPlanRelationshipDto;
+import com.etf.pc.dtos.*;
 import com.etf.pc.entities.TariffPlan;
 import com.etf.pc.entities.TariffPlanDiscounts;
 import com.etf.pc.exceptions.BadRequestException;
@@ -17,7 +14,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.etf.pc.common.PcConstants.ErrorCodes.*;
 import static com.etf.pc.common.PcConstants.SuccessCodes.*;
@@ -106,5 +105,29 @@ public class TariffPlanDiscountsService {
         }
         this.discountsRepository.deleteById(id);
         return DISCOUNT_DELETED;
+    }
+
+    public Map<String, List<DiscountInfoDto>> getAllDiscountsGroupedByTariffPlanIdentifier() {
+        List<TariffPlanDiscounts> allDiscounts = discountsRepository.findAll();
+
+        return allDiscounts.stream()
+                .filter(discount -> discount.getTariffPlan() != null)
+                .collect(Collectors.groupingBy(
+                        discount -> discount.getTariffPlan().getIdentifier(),
+                        Collectors.mapping(this::mapToDto, Collectors.toList())
+                ));
+    }
+
+    private DiscountInfoDto mapToDto(TariffPlanDiscounts entity) {
+        return DiscountInfoDto.builder()
+                .id(entity.getId())
+                .discount(entity.getDiscount())
+                .minAmountOfTariffPlans(entity.getMinAmountOfTariffPlans())
+                .maxAmountOfTariffPlans(entity.getMaxAmountOfTariffPlans())
+                .createdByUser(entity.getCreatedByUser())
+                .modifiedByUser(entity.getModifiedByUser())
+                .dateCreated(entity.getDateCreated())
+                .dateModified(entity.getDateModified())
+                .build();
     }
 }

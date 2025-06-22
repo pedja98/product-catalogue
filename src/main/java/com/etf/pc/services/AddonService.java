@@ -24,7 +24,10 @@ public class AddonService {
 
     private final AddonRepository addonRepository;
 
-    public List<Addon> getAll() {
+    public List<Addon> getAll(ItemStatus status) {
+        if (status != null) {
+            return addonRepository.findAllByStatus(status);
+        }
         return addonRepository.findAll();
     }
 
