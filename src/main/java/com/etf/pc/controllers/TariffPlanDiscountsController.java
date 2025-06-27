@@ -1,9 +1,6 @@
 package com.etf.pc.controllers;
 
-import com.etf.pc.dtos.DiscountInfoDto;
-import com.etf.pc.dtos.MessageResponse;
-import com.etf.pc.dtos.SaveTariffPlanDiscountDto;
-import com.etf.pc.dtos.TariffPlanDiscountResponseDto;
+import com.etf.pc.dtos.*;
 import com.etf.pc.services.TariffPlanDiscountsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -46,4 +43,14 @@ public class TariffPlanDiscountsController {
         Map<String, List<DiscountInfoDto>> result = discountService.getAllDiscountsGroupedByTariffPlanIdentifier();
         return ResponseEntity.ok(result);
     }
+
+    @GetMapping("/{tariffPlanIdentifier}/first-fit-discount")
+    public ResponseEntity<TariffPlanDiscountDto> getFirstFitDiscount(
+            @PathVariable String tariffPlanIdentifier,
+            @RequestParam("amount") int amount
+    ) {
+        TariffPlanDiscountDto result = discountService.getFirstFitDiscount(tariffPlanIdentifier, amount);
+        return ResponseEntity.ok(result);
+    }
+
 }

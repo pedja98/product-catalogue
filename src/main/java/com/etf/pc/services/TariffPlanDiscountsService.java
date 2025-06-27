@@ -118,6 +118,25 @@ public class TariffPlanDiscountsService {
                 ));
     }
 
+    public TariffPlanDiscountDto getFirstFitDiscount(String tariffPlanIdentifier, int amount) {
+        TariffPlanDiscounts discount = discountsRepository
+                .findFirstFitDiscountByIdentifierAndAmount(tariffPlanIdentifier, amount);
+
+        if (discount == null) return null;
+
+        return TariffPlanDiscountDto.builder()
+                .id(discount.getId())
+                .discount(discount.getDiscount())
+                .minAmountOfTariffPlans(discount.getMinAmountOfTariffPlans())
+                .maxAmountOfTariffPlans(discount.getMaxAmountOfTariffPlans())
+                .createdByUser(discount.getCreatedByUser())
+                .modifiedByUser(discount.getModifiedByUser())
+                .dateCreated(discount.getDateCreated())
+                .dateModified(discount.getDateModified())
+                .build();
+    }
+
+
     private DiscountInfoDto mapToDto(TariffPlanDiscounts entity) {
         return DiscountInfoDto.builder()
                 .id(entity.getId())
