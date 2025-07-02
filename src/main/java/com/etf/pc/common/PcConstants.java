@@ -10,6 +10,7 @@ public class PcConstants {
     public static final class ErrorCodes {
         public static final String CHAR_NOT_FOUND = "charNotFound";
         public static final String CHAR_ALREADY_ADDED = "charAlreadyExistsAdded";
+        public static final String DELETE_TP_CHAR_12H_PASSED = "deleteTpChar12hPassed";
         public static final String MAX_TP_LOWER_THEN_MIN = "maxTpLowerThenMin";
         public static final String TARIFF_PLAN_NOT_FOUND = "tariffPlanNotFound";
         public static final String ADDON_NOT_FOUND = "addonNotFound";

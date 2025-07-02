@@ -17,6 +17,8 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -90,9 +92,16 @@ public class TariffPlanCharacteristicService {
     }
 
     public String delete(UUID id) {
-        if (!tariffPlanCharacteristicRepository.existsById(id)) {
-            throw new IllegalArgumentException(CHAR_NOT_FOUND);
+        TariffPlanCharacteristic tpc = this.tariffPlanCharacteristicRepository.findById(id)
+                .orElseThrow(() -> new ItemNotFoundException(TARIFF_PLAN_CHARACTERISTIC_DELETED));
+
+        Instant now = Instant.now();
+        Duration duration = Duration.between(tpc.getDateCreated(), now);
+
+        if (duration.toHours() > 12) {
+            throw new RuntimeException(CHAR_ALREADY_ADDED);
         }
+
         tariffPlanCharacteristicRepository.deleteById(id);
         return TARIFF_PLAN_CHARACTERISTIC_DELETED;
     }
